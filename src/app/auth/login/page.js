@@ -63,8 +63,11 @@ function LoginForm() {
         setError(result.error);
         setLoading(false);
       } else {
-        router.push(callbackUrl);
-        router.refresh();
+        // Small delay to allow session to be established before redirect
+        setTimeout(() => {
+          router.push(callbackUrl);
+          router.refresh();
+        }, 100);
       }
     } catch (err) {
       setError('Something went wrong. Please try again.');

@@ -5,6 +5,7 @@ import dbConnect from './mongodb';
 import User from '../models/User';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -45,13 +46,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         } else {
           // Sign in flow
           const user = await User.findOne({ email: credentials.email.toLowerCase() });
-          
+
           if (!user) {
             throw new Error('No user found with this email');
           }
 
           const passwordMatch = await bcrypt.compare(credentials.password, user.password);
-          
+
           if (!passwordMatch) {
             throw new Error('Invalid password');
           }
