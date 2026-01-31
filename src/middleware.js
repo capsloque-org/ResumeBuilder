@@ -1,9 +1,20 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
+import { getToken } from 'next-auth/jwt';
 
 export async function middleware(req) {
-  const session = await auth();
-  const isLoggedIn = !!session?.user;
+  // NextAuth v5 uses AUTH_SECRET, but we fall back to NEXTAUTH_SECRET for compatibility
+  const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+
+  const token = await getToken({
+    req,
+    secret,
+    // NextAuth v5 uses 'authjs.session-token' cookie name by default
+    cookieName: process.env.NODE_ENV === 'production'
+      ? '__Secure-authjs.session-token'
+      : 'authjs.session-token'
+  });
+
+  const isLoggedIn = !!token;
   const isBuilderRoute = req.nextUrl.pathname.startsWith('/builder');
   const isAuthRoute = req.nextUrl.pathname.startsWith('/auth');
 
