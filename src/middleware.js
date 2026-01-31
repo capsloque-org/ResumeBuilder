@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { auth } from '@/lib/auth';
 
 export async function middleware(req) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  const isLoggedIn = !!token;
+  const session = await auth();
+  const isLoggedIn = !!session?.user;
   const isBuilderRoute = req.nextUrl.pathname.startsWith('/builder');
   const isAuthRoute = req.nextUrl.pathname.startsWith('/auth');
 
