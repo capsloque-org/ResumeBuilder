@@ -677,7 +677,7 @@ function CTASection() {
               <ArrowRight className="w-5 h-5" />
             </motion.button>
           </Link>
-          <p className="mt-4 text-slate-500 text-sm">No sign-up required • 100% Free</p>
+          {/* <p className="mt-4 text-slate-500 text-sm">No sign-up required • 100% Free</p> */}
         </motion.div>
       </div>
     </section>
