@@ -648,7 +648,7 @@ export default function ResumePreview({ onOpenTemplate }) {
               title="Templates"
             >
               <Palette className="w-4 h-4" />
-              <span className="text-sm font-medium hidden sm:inline">Templates</span>
+              <span className="text-sm font-medium hidden sm:inline">Reorder or Switch Templates</span>
             </button>
           </>
         )}

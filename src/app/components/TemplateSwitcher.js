@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Layout, Sparkles, Award, X, Download, ChevronUp, ChevronDown, GripVertical, Loader2 } from 'lucide-react';
+import { Layout, Sparkles, Award, X, Download, ChevronUp, ChevronDown, GripVertical, Loader2, Palette } from 'lucide-react';
 import { useResume } from '../context/ResumeContext';
 
 const templates = [
@@ -37,10 +37,18 @@ const sectionNames = {
   projects: 'Projects'
 };
 
-export default function TemplateSwitcher({ isOpen, onClose }) {
+export default function TemplateSwitcher({ isOpen, onClose, initialTab = 'templates' }) {
   const { activeTemplate, setActiveTemplate, resumeData, moveSectionUp, moveSectionDown } = useResume();
   const sectionOrder = resumeData.sectionOrder || ['summary', 'experience', 'education', 'skills', 'projects'];
   const [isGenerating, setIsGenerating] = useState(false);
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  // Sync activeTab when initialTab prop changes (e.g. opened from different buttons)
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   const handleDownloadPDF = async () => {
     setIsGenerating(true);
@@ -123,106 +131,133 @@ export default function TemplateSwitcher({ isOpen, onClose }) {
           ${isOpen ? 'lg:relative lg:translate-x-0' : 'lg:hidden'}`}
       >
         <div className="h-full flex flex-col">
-          {/* Header */}
-          <div className="p-4 border-b border-slate-200 flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-[#1e3a5f]">Templates</h2>
-            <button
-              onClick={onClose}
-              className="p-1 text-slate-400 hover:text-red-600 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+          {/* Header with Tabs */}
+          <div className="border-b border-slate-200">
+            <div className="p-4 flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-[#1e3a5f]">
+                {activeTab === 'templates' ? 'Change Templates' : 'Reorder Sections'}
+              </h2>
+              <button
+                onClick={onClose}
+                className="p-1 text-slate-400 hover:text-red-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            {/* Tab Switcher */}
+            <div className="flex px-4 pb-0">
+              <button
+                onClick={() => setActiveTab('reorder')}
+                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-sm font-medium border-b-2 transition-all ${activeTab === 'reorder'
+                    ? 'border-[#dc2626] text-[#dc2626]'
+                    : 'border-transparent text-slate-400 hover:text-slate-600'
+                  }`}
+              >
+                <GripVertical className="w-4 h-4" />
+                Reorder
+              </button>
+              <button
+                onClick={() => setActiveTab('templates')}
+                className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-sm font-medium border-b-2 transition-all ${activeTab === 'templates'
+                    ? 'border-[#dc2626] text-[#dc2626]'
+                    : 'border-transparent text-slate-400 hover:text-slate-600'
+                  }`}
+              >
+                <Palette className="w-4 h-4" />
+                Templates
+              </button>
+            </div>
           </div>
 
-          {/* Template Options */}
+          {/* Tab Content */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {/* Templates Section */}
-            <div className="space-y-3">
-              {templates.map((template) => (
-                <motion.button
-                  key={template.id}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => setActiveTemplate(template.id)}
-                  className={`w-full p-4 rounded-lg border-2 text-left transition-all ${activeTemplate === template.id
+            {activeTab === 'templates' ? (
+              /* Templates Section */
+              <div className="space-y-3">
+                {templates.map((template) => (
+                  <motion.button
+                    key={template.id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setActiveTemplate(template.id)}
+                    className={`w-full p-4 rounded-lg border-2 text-left transition-all ${activeTemplate === template.id
                       ? 'border-[#dc2626] bg-red-50'
                       : 'border-slate-200 hover:border-slate-300 bg-white'
-                    }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={`w-12 h-16 rounded ${template.preview} shadow-sm flex-shrink-0`}>
-                      <div className="p-1 space-y-1">
-                        <div className="h-1 bg-slate-300 rounded w-8 mx-auto mt-2"></div>
-                        <div className="h-0.5 bg-slate-200 rounded w-6 mx-auto"></div>
-                        <div className="h-0.5 bg-slate-200 rounded w-10 mx-auto"></div>
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <template.icon className={`w-4 h-4 ${activeTemplate === template.id ? 'text-[#dc2626]' : 'text-slate-500'
-                          }`} />
-                        <span className={`font-medium ${activeTemplate === template.id ? 'text-[#dc2626]' : 'text-slate-700'
-                          }`}>
-                          {template.name}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1">{template.description}</p>
-                    </div>
-                    {activeTemplate === template.id && (
-                      <div className="w-5 h-5 rounded-full bg-[#dc2626] flex items-center justify-center flex-shrink-0">
-                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                </motion.button>
-              ))}
-            </div>
-
-            {/* Section Reorder */}
-            <div className="border-t border-slate-200 pt-4">
-              <h3 className="text-sm font-semibold text-[#1e3a5f] mb-3 flex items-center gap-2">
-                <GripVertical className="w-4 h-4" />
-                Reorder Sections
-              </h3>
-              <div className="space-y-2">
-                {sectionOrder.map((sectionId, index) => (
-                  <div
-                    key={sectionId}
-                    className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200"
+                      }`}
                   >
-                    <span className="flex-1 text-sm font-medium text-slate-700">
-                      {sectionNames[sectionId]}
-                    </span>
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => moveSectionUp(sectionId)}
-                        disabled={index === 0}
-                        className={`p-1 rounded transition-colors ${index === 0
-                            ? 'text-slate-300 cursor-not-allowed'
-                            : 'text-slate-500 hover:text-[#1e3a5f] hover:bg-slate-200'
-                          }`}
-                        title="Move up"
-                      >
-                        <ChevronUp className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => moveSectionDown(sectionId)}
-                        disabled={index === sectionOrder.length - 1}
-                        className={`p-1 rounded transition-colors ${index === sectionOrder.length - 1
-                            ? 'text-slate-300 cursor-not-allowed'
-                            : 'text-slate-500 hover:text-[#1e3a5f] hover:bg-slate-200'
-                          }`}
-                        title="Move down"
-                      >
-                        <ChevronDown className="w-4 h-4" />
-                      </button>
+                    <div className="flex items-start gap-3">
+                      <div className={`w-12 h-16 rounded ${template.preview} shadow-sm flex-shrink-0`}>
+                        <div className="p-1 space-y-1">
+                          <div className="h-1 bg-slate-300 rounded w-8 mx-auto mt-2"></div>
+                          <div className="h-0.5 bg-slate-200 rounded w-6 mx-auto"></div>
+                          <div className="h-0.5 bg-slate-200 rounded w-10 mx-auto"></div>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <template.icon className={`w-4 h-4 ${activeTemplate === template.id ? 'text-[#dc2626]' : 'text-slate-500'
+                            }`} />
+                          <span className={`font-medium ${activeTemplate === template.id ? 'text-[#dc2626]' : 'text-slate-700'
+                            }`}>
+                            {template.name}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1">{template.description}</p>
+                      </div>
+                      {activeTemplate === template.id && (
+                        <div className="w-5 h-5 rounded-full bg-[#dc2626] flex items-center justify-center flex-shrink-0">
+                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  </motion.button>
                 ))}
               </div>
-            </div>
+            ) : (
+              /* Reorder Sections */
+              <div>
+                <p className="text-xs text-slate-500 mb-3">Drag sections to reorder how they appear on your resume.</p>
+                <div className="space-y-2">
+                  {sectionOrder.map((sectionId, index) => (
+                    <div
+                      key={sectionId}
+                      className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg border border-slate-200"
+                    >
+                      <GripVertical className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                      <span className="flex-1 text-sm font-medium text-slate-700">
+                        {sectionNames[sectionId]}
+                      </span>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => moveSectionUp(sectionId)}
+                          disabled={index === 0}
+                          className={`p-1 rounded transition-colors ${index === 0
+                            ? 'text-slate-300 cursor-not-allowed'
+                            : 'text-slate-500 hover:text-[#1e3a5f] hover:bg-slate-200'
+                            }`}
+                          title="Move up"
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => moveSectionDown(sectionId)}
+                          disabled={index === sectionOrder.length - 1}
+                          className={`p-1 rounded transition-colors ${index === sectionOrder.length - 1
+                            ? 'text-slate-300 cursor-not-allowed'
+                            : 'text-slate-500 hover:text-[#1e3a5f] hover:bg-slate-200'
+                            }`}
+                          title="Move down"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Actions */}
@@ -233,8 +268,8 @@ export default function TemplateSwitcher({ isOpen, onClose }) {
               onClick={handleDownloadPDF}
               disabled={isGenerating}
               className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-colors ${isGenerating
-                  ? 'bg-slate-400 cursor-not-allowed'
-                  : 'bg-[#dc2626] hover:bg-[#b91c1c]'
+                ? 'bg-slate-400 cursor-not-allowed'
+                : 'bg-[#dc2626] hover:bg-[#b91c1c]'
                 } text-white`}
             >
               {isGenerating ? (

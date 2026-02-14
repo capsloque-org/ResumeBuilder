@@ -5,7 +5,50 @@ import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, FileText, ArrowRight, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Mail, Lock, User, FileText, ArrowRight, Eye, EyeOff, AlertCircle, Sparkles } from 'lucide-react';
+
+// Animated Background Orbs for Login
+function AnimatedBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Primary orbs */}
+      <motion.div
+        animate={{
+          x: [0, 80, 0],
+          y: [0, -40, 0],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-1/4 left-1/4 w-80 h-80 bg-gradient-to-r from-red-500/25 to-orange-500/25 rounded-full blur-3xl"
+      />
+      <motion.div
+        animate={{
+          x: [0, -60, 0],
+          y: [0, 50, 0],
+          scale: [1, 1.3, 1],
+        }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        className="absolute top-1/2 right-1/4 w-72 h-72 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl"
+      />
+      <motion.div
+        animate={{
+          x: [0, 40, 0],
+          y: [0, -60, 0],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+        className="absolute bottom-1/4 left-1/2 w-64 h-64 bg-gradient-to-r from-purple-500/15 to-pink-500/15 rounded-full blur-3xl"
+      />
+
+      {/* Grid pattern overlay */}
+      <div className="absolute inset-0 opacity-[0.02]" style={{
+        backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                          linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+        backgroundSize: '40px 40px'
+      }} />
+    </div>
+  );
+}
 
 function LoginForm() {
   const router = useRouter();
@@ -76,117 +119,135 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1e3a5f] via-[#1e3a5f] to-[#0f1d2f] flex items-center justify-center p-4">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }} />
-      </div>
+    <div className="min-h-screen hero-bg flex items-center justify-center p-4 relative">
+      <AnimatedBackground />
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative z-10 w-full max-w-md"
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="flex items-center justify-center w-12 h-12 bg-white rounded-xl">
-            <FileText className="w-7 h-7 text-[#1e3a5f]" />
-          </div>
+        <Link href="/" className="flex items-center justify-center gap-3 mb-10">
+          <motion.div
+            whileHover={{ scale: 1.05, rotate: 5 }}
+            className="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-white to-slate-100 rounded-2xl shadow-xl"
+          >
+            <FileText className="w-8 h-8 text-[#1e3a5f]" />
+          </motion.div>
           <div className="flex flex-col">
             <span className="text-2xl font-bold tracking-tight">
               <span className="text-white">CAPS</span>
-              <span className="text-[#dc2626]">LOQUE</span>
+              <span className="gradient-text">LOQUE</span>
             </span>
-            <span className="text-xs text-white/60 -mt-1">Resume Builder</span>
+            <span className="text-xs text-white/50 -mt-0.5">Resume Builder</span>
           </div>
         </Link>
 
-        {/* Auth Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
+        {/* Auth Card - Premium glassmorphism */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="premium-glass-light rounded-3xl shadow-2xl p-8 md:p-10"
+        >
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-slate-800 mb-2">
-              {isSignUp ? 'Create your account' : 'Welcome back'}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.3, type: "spring" }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-red-50 to-orange-50 rounded-full text-sm font-medium text-[#dc2626] mb-4 border border-red-100"
+            >
+              <Sparkles className="w-4 h-4" />
+              {isSignUp ? 'Join 50K+ users' : 'Welcome back'}
+            </motion.div>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-2">
+              {isSignUp ? 'Create your account' : 'Sign in to continue'}
             </h1>
-            <p className="text-slate-600">
+            <p className="text-slate-500">
               {isSignUp
                 ? 'Start building your professional resume'
-                : 'Sign in to continue to your resume'}
+                : 'Access your saved resumes and templates'}
             </p>
           </div>
 
           {/* Error Message */}
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-700"
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="mb-6 p-4 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-xl flex items-center gap-3 text-red-700"
             >
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm">{error}</span>
+              <div className="p-1 bg-red-200 rounded-full">
+                <AlertCircle className="w-4 h-4" />
+              </div>
+              <span className="text-sm font-medium">{error}</span>
             </motion.div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {isSignUp && (
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+              >
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Full Name
                 </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <div className="relative group">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#1e3a5f] transition-colors" />
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="John Doe"
-                    className="w-full pl-11 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                    className="w-full pl-12 pr-4 py-3.5 bg-white/80 border-2 border-slate-200 rounded-xl focus:ring-0 focus:border-[#1e3a5f] focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
                     required={isSignUp}
                   />
                 </div>
-              </div>
+              </motion.div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Email Address
               </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#1e3a5f] transition-colors" />
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@example.com"
-                  className="w-full pl-11 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                  className="w-full pl-12 pr-4 py-3.5 bg-white/80 border-2 border-slate-200 rounded-xl focus:ring-0 focus:border-[#1e3a5f] focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Password
               </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#1e3a5f] transition-colors" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full pl-11 pr-12 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                  className="w-full pl-12 pr-14 py-3.5 bg-white/80 border-2 border-slate-200 rounded-xl focus:ring-0 focus:border-[#1e3a5f] focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -194,34 +255,38 @@ function LoginForm() {
             </div>
 
             {isSignUp && (
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+              >
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
                   Confirm Password
                 </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <div className="relative group">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#1e3a5f] transition-colors" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className="w-full pl-11 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-[#1e3a5f] focus:border-transparent outline-none transition-all"
+                    className="w-full pl-12 pr-4 py-3.5 bg-white/80 border-2 border-slate-200 rounded-xl focus:ring-0 focus:border-[#1e3a5f] focus:bg-white outline-none transition-all text-slate-800 placeholder:text-slate-400"
                     required={isSignUp}
                   />
                 </div>
-              </div>
+              </motion.div>
             )}
 
             <motion.button
-              whileHover={{ scale: 1.02 }}
+              whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#dc2626] text-white font-semibold rounded-lg hover:bg-[#b91c1c] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 premium-btn text-white font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-lg mt-6"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
                   {isSignUp ? 'Create Account' : 'Sign In'}
@@ -231,7 +296,7 @@ function LoginForm() {
             </motion.button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <p className="text-slate-600">
               {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
               <button
@@ -240,20 +305,26 @@ function LoginForm() {
                   setError('');
                   setFormData({ name: '', email: '', password: '', confirmPassword: '' });
                 }}
-                className="text-[#dc2626] font-semibold hover:underline"
+                className="text-[#dc2626] font-bold hover:underline"
               >
                 {isSignUp ? 'Sign In' : 'Sign Up'}
               </button>
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Back to Home */}
-        <div className="mt-6 text-center">
-          <Link href="/" className="text-white/70 hover:text-white transition-colors">
-            ← Back to Home
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-8 text-center"
+        >
+          <Link href="/" className="inline-flex items-center gap-2 text-white/60 hover:text-white transition-colors font-medium">
+            <ArrowRight className="w-4 h-4 rotate-180" />
+            Back to Home
           </Link>
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );
@@ -261,8 +332,11 @@ function LoginForm() {
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1e3a5f] via-[#1e3a5f] to-[#0f1d2f] flex items-center justify-center">
-      <div className="text-white text-lg">Loading...</div>
+    <div className="min-h-screen hero-bg flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 border-4 border-[#dc2626] border-t-transparent rounded-full animate-spin" />
+        <div className="text-white/60 font-medium">Loading...</div>
+      </div>
     </div>
   );
 }

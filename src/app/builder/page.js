@@ -1,163 +1,192 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Download, Maximize2, Minimize2, Eye, EyeOff } from 'lucide-react';
+import { Palette, X } from 'lucide-react';
 import { ResumeProvider, useResume } from '../context/ResumeContext';
-import Navbar from '../components/Navbar';
 import Editor from '../components/Editor';
 import ResumePreview from '../components/ResumePreview';
 import TemplateSwitcher from '../components/TemplateSwitcher';
 
 function ResumeBuilder() {
-  const [templateSidebarOpen, setTemplateSidebarOpen] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const [previewMinimized, setPreviewMinimized] = useState(false);
-  const { loadProgress, setActiveTemplate } = useResume();
-  const searchParams = useSearchParams();
-  const [initialized, setInitialized] = useState(false);
+    const [templateSidebarOpen, setTemplateSidebarOpen] = useState(false);
+    const [templateSidebarTab, setTemplateSidebarTab] = useState('reorder');
+    const [showPreview, setShowPreview] = useState(false);
+    const { loadProgress, setActiveTemplate } = useResume();
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const [initialized, setInitialized] = useState(false);
 
-  useEffect(() => {
-    const init = async () => {
-      await loadProgress();
+    useEffect(() => {
+        const init = async () => {
+            await loadProgress();
 
-      // Check if template is specified in URL (only on first load)
-      const templateParam = searchParams.get('template');
-      if (templateParam && ['minimalist', 'modern', 'executive'].includes(templateParam)) {
-        setActiveTemplate(templateParam, true); // skipSave = true for URL param
-      }
-      setInitialized(true);
+            // Check if template is specified in URL (only on first load)
+            const templateParam = searchParams.get('template');
+            if (templateParam && ['minimalist', 'modern', 'executive'].includes(templateParam)) {
+                setActiveTemplate(templateParam, true);
+            }
+            setInitialized(true);
+        };
+
+        if (!initialized) {
+            init();
+        }
+    }, [loadProgress, searchParams, setActiveTemplate, initialized]);
+
+    const handleBack = () => {
+        router.push('/');
     };
 
-    if (!initialized) {
-      init();
-    }
-  }, [loadProgress, searchParams, setActiveTemplate, initialized]);
+    const handleOpenPreview = () => {
+        setShowPreview(true);
+        setTemplateSidebarTab('reorder');
+        setTemplateSidebarOpen(true);
+    };
 
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <Navbar />
+    const handleOpenTemplates = () => {
+        setTemplateSidebarTab('templates');
+        setTemplateSidebarOpen(true);
+    };
 
-      {/* Main Content */}
-      <main className="pt-16">
-        <div className="h-[calc(100vh-4rem)] flex">
-          {/* Editor Section */}
-          <div className={`${previewMinimized ? 'w-full' : 'w-full lg:w-1/2'} p-4 lg:p-6 overflow-hidden ${showPreview ? 'hidden lg:block' : ''} no-print transition-all duration-300`}>
-            <Editor />
-          </div>
+    return (
+        <div className="min-h-screen bg-[#030712] relative overflow-hidden">
+            {/* Premium background gradients */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-red-500/10 to-transparent rounded-full blur-3xl" />
+                <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-3xl" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-purple-500/5 to-transparent rounded-full blur-3xl" />
+            </div>
 
-          {/* Preview Section */}
-          <AnimatePresence>
-            {!previewMinimized && (
-              <motion.div
-                initial={{ width: 0, opacity: 0 }}
-                animate={{ width: '50%', opacity: 1 }}
-                exit={{ width: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className={`bg-slate-200 overflow-hidden relative ${!showPreview ? 'hidden lg:block' : 'w-full'}`}
-              >
-                {/* Minimize Button */}
-                <button
-                  onClick={() => setPreviewMinimized(true)}
-                  className="absolute bg-gray-300 top-4 left-4 z-20 p-2 border border-red-600 rounded-lg shadow-md hover:bg-slate-100 transition-colors hidden lg:flex items-center gap-2"
-                  title="Minimize preview"
-                >
-                  <Minimize2 className="w-4 h-4 text-red-600" />
-                  <span className="text-sm text-red-600">Minimize</span>
-                </button>
-                <ResumePreview onOpenTemplate={() => setTemplateSidebarOpen(true)} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+            {/* Main Content */}
+            <main className="h-screen flex relative z-10">
+                {/* Editor Section */}
+                <div className={`${showPreview ? 'hidden lg:block lg:w-1/2' : 'w-full'} h-full overflow-hidden transition-all duration-500`}>
+                    <Editor onBack={handleBack} onPreview={handleOpenPreview} />
+                </div>
 
-          {/* Minimized Preview Bar (Desktop only) */}
-          {previewMinimized && (
+                {/* Preview Section - Right Side */}
+                <AnimatePresence>
+                    {showPreview && (
+                        <motion.div
+                            initial={{ width: 0, opacity: 0 }}
+                            animate={{ width: '50%', opacity: 1 }}
+                            exit={{ width: 0, opacity: 0 }}
+                            transition={{ duration: 0.4, ease: "easeInOut" }}
+                            className="hidden lg:block bg-gradient-to-br from-slate-200 to-slate-300 overflow-hidden relative"
+                        >
+                            {/* Close Preview Button */}
+                            <motion.button
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.3 }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setShowPreview(false)}
+                                className="absolute top-4 left-4 z-20 p-2.5 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 border border-slate-200"
+                                title="Close preview"
+                            >
+                                <X className="w-4 h-4 text-slate-600" />
+                                <span className="text-sm font-medium text-slate-600">Close</span>
+                            </motion.button>
+                            <ResumePreview onOpenTemplate={handleOpenTemplates} />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Template Sidebar (Desktop) */}
+                <div className="hidden lg:block no-print">
+                    <TemplateSwitcher
+                        isOpen={templateSidebarOpen}
+                        onClose={() => setTemplateSidebarOpen(false)}
+                        initialTab={templateSidebarTab}
+                    />
+                </div>
+            </main>
+
+            {/* Mobile Toggle Bar */}
+            <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-[#0f172a] to-[#0f172a]/95 backdrop-blur-xl border-t border-white/10 p-4 lg:hidden no-print z-30">
+                <div className="flex gap-3 max-w-md mx-auto">
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setShowPreview(false)}
+                        className={`flex-1 py-3.5 px-4 rounded-xl font-semibold transition-all ${!showPreview
+                            ? 'premium-btn text-white'
+                            : 'bg-slate-800/80 text-slate-400 border border-slate-700'
+                            }`}
+                    >
+                        Editor
+                    </motion.button>
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setShowPreview(true)}
+                        className={`flex-1 py-3.5 px-4 rounded-xl font-semibold transition-all ${showPreview
+                            ? 'premium-btn text-white'
+                            : 'bg-slate-800/80 text-slate-400 border border-slate-700'
+                            }`}
+                    >
+                        Preview
+                    </motion.button>
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={handleOpenTemplates}
+                        className="py-3.5 px-5 bg-gradient-to-r from-[#1e3a5f] to-[#2d4a6f] text-white rounded-xl border border-white/10"
+                    >
+                        <Palette className="w-5 h-5" />
+                    </motion.button>
+                </div>
+            </div>
+
+            {/* Mobile Template Sidebar */}
+            <div className="lg:hidden no-print">
+                <TemplateSwitcher
+                    isOpen={templateSidebarOpen}
+                    onClose={() => setTemplateSidebarOpen(false)}
+                    initialTab={templateSidebarTab}
+                />
+            </div>
+        </div>
+    );
+}
+
+// Premium Loading Spinner
+function LoadingSpinner() {
+    return (
+        <div className="min-h-screen bg-[#030712] flex items-center justify-center relative overflow-hidden">
+            {/* Background gradients */}
+            <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-red-500/20 to-transparent rounded-full blur-3xl animate-pulse" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-blue-500/20 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+            </div>
+
             <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: 60 }}
-              className="hidden lg:flex flex-col items-center bg-slate-200 border-l border-slate-300"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col items-center gap-6 relative z-10"
             >
-              <button
-                onClick={() => setPreviewMinimized(false)}
-                className="mt-4 p-3 bg-gray-300 border border-red-600 rounded-lg shadow-md hover:bg-slate-100 transition-colors flex flex-col items-center gap-2"
-                title="Expand preview"
-              >
-                <Maximize2 className="w-5 h-5 text-red-600" />
-                <span className="text-xs text-red-600 writing-mode-vertical" style={{ writingMode: 'vertical-rl' }}>Preview</span>
-              </button>
+                <div className="relative">
+                    <div className="w-16 h-16 border-4 border-[#dc2626]/30 rounded-full" />
+                    <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-t-[#dc2626] rounded-full animate-spin" />
+                </div>
+                <div className="text-center">
+                    <div className="text-white font-semibold text-lg mb-1">Loading Resume Builder</div>
+                    <div className="text-slate-500 text-sm">Preparing your workspace...</div>
+                </div>
             </motion.div>
-          )}
-
-          {/* Template Sidebar (Desktop) */}
-          <div className="hidden lg:block no-print">
-            <TemplateSwitcher
-              isOpen={templateSidebarOpen}
-              onClose={() => setTemplateSidebarOpen(false)}
-            />
-          </div>
         </div>
-
-        {/* Mobile Toggle Bar */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-[#1e3a5f] p-3 lg:hidden no-print z-30">
-          <div className="flex gap-3">
-            <button
-              onClick={() => setShowPreview(false)}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${!showPreview
-                ? 'bg-[#1e3a5f] text-white'
-                : 'bg-slate-100 text-slate-600'
-                }`}
-            >
-              Editor
-            </button>
-            <button
-              onClick={() => setShowPreview(true)}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${showPreview
-                ? 'bg-[#1e3a5f] text-white'
-                : 'bg-slate-100 text-slate-600'
-                }`}
-            >
-              Preview
-            </button>
-            <button
-              onClick={() => setTemplateSidebarOpen(true)}
-              className="py-2 px-4 bg-[#dc2626] text-white rounded-lg"
-            >
-              <Palette className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-
-
-        {/* Mobile Download Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setTemplateSidebarOpen(true)}
-          className="lg:hidden fixed bottom-20 right-4 flex items-center justify-center w-14 h-14 bg-[#dc2626] text-white rounded-full shadow-lg no-print z-30"
-        >
-          <Download className="w-6 h-6" />
-        </motion.button>
-      </main>
-
-      {/* Mobile Template Sidebar */}
-      <div className="lg:hidden no-print">
-        <TemplateSwitcher
-          isOpen={templateSidebarOpen}
-          onClose={() => setTemplateSidebarOpen(false)}
-        />
-      </div>
-    </div>
-  );
+    );
 }
 
 export default function BuilderPage() {
-  return (
-    <ResumeProvider>
-      <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><div className="text-slate-500">Loading...</div></div>}>
-        <ResumeBuilder />
-      </Suspense>
-    </ResumeProvider>
-  );
+    return (
+        <ResumeProvider>
+            <Suspense fallback={<LoadingSpinner />}>
+                <ResumeBuilder />
+            </Suspense>
+        </ResumeProvider>
+    );
 }
