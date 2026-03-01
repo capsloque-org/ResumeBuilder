@@ -1,0 +1,157 @@
+/* ============================================================
+   CAPSLOQUE Design System — Neo-Brutalism Color Palette
+   ============================================================
+   
+   Philosophy: "Bold Clarity"
+   Cream backgrounds, bold black borders, hard shadows,
+   vibrant accent colors. Raw, confident, premium.
+   
+   Neo-Brutalism Principles:
+   - Thick black borders (2-3px)
+   - Hard offset shadows (no blur)
+   - Flat, vibrant colors
+   - High contrast
+   - Intentional rawness with premium polish
+   
+   Palette:
+   - Cream        #FDF6EC   Primary background
+   - Ink Black    #1A1A1A   Borders, text, shadows
+   - Electric Blue #3B82F6   Primary accent
+   - Coral Red    #FF6B6B   Secondary accent / CTA
+   - Lime Green   #A3E635   Success / highlights
+   - Soft Violet  #A78BFA   Tertiary accent
+   - Warm Yellow  #FBBF24   Warning / badges
+   
+   ============================================================ */
+
+:root {
+  /* ── Background Scale (Neo-Brutalism) ── */
+  --c-bg-primary: #fdf6ec; /* Warm cream — page background        */
+  --c-bg-secondary: #fff8f0; /* Lighter cream — alt sections        */
+  --c-bg-tertiary: #fef3c7; /* Soft yellow — cards, panels         */
+  --c-bg-elevated: #fde68a; /* Yellow tint — hover states          */
+  --c-bg-surface: #ffffff; /* Pure white — inputs, cards          */
+
+  /* ── Dark Surfaces (footer, builder, overlays) ── */
+  --c-surface-dark: #1a1a1a; /* Ink black — footer, dark sections   */
+  --c-surface-dark-alt: #2d2d2d; /* Slightly lighter black              */
+  --c-surface-dark-card: #333333;
+  --c-surface-white: #ffffff;
+  --c-surface-50: #fff8f0;
+  --c-surface-100: #fef3c7;
+  --c-surface-200: #fde68a;
+
+  /* ── Accent — Electric Blue (Primary Brand Color) ── */
+  --c-accent: #3b82f6; /* Electric blue                       */
+  --c-accent-light: #60a5fa; /* Hover / highlights                  */
+  --c-accent-dark: #2563eb; /* Pressed / active                    */
+  --c-accent-muted: rgba(59, 130, 246, 0.12);
+  --c-accent-glow: rgba(59, 130, 246, 0.3);
+  --c-accent-50: #eff6ff;
+  --c-accent-100: #dbeafe;
+
+  /* ── Secondary Accent — Coral Red ── */
+  --c-coral: #ff6b6b;
+  --c-coral-dark: #ef4444;
+  --c-coral-light: #fca5a5;
+
+  /* ── Tertiary Accents ── */
+  --c-lime: #a3e635;
+  --c-violet: #a78bfa;
+  --c-yellow: #fbbf24;
+  --c-peach: #fecaca;
+
+  /* ── Navy (Legacy compat) ── */
+  --c-navy: #1a1a1a;
+  --c-navy-light: #2d2d2d;
+  --c-navy-muted: rgba(26, 26, 26, 0.08);
+
+  /* ── Text Scale ── */
+  --c-text-primary: #1a1a1a; /* Headings, primary content (ink)     */
+  --c-text-secondary: #404040; /* Body text, descriptions             */
+  --c-text-muted: #737373; /* Subtle text, placeholders           */
+  --c-text-disabled: #a3a3a3; /* Disabled states                     */
+  --c-text-inverse: #ffffff; /* Text on dark backgrounds            */
+
+  /* ── Dark-mode text (for footer, builder) ── */
+  --c-text-dark-inverse: #fdf6ec;
+  --c-text-dark-secondary: #a3a3a3;
+  --c-text-dark-muted: #737373;
+
+  /* ── Borders — Bold Neo-Brutalism ── */
+  --c-border: #1a1a1a; /* Primary bold border                 */
+  --c-border-light: #d4d4d4; /* Subtle border                       */
+  --c-border-lighter: #525252; /* Medium border                       */
+  --c-border-accent: #3b82f6; /* Active border                       */
+  --c-border-dark: rgba(255, 255, 255, 0.15);
+
+  /* ── Status Colors ── */
+  --c-success: #22c55e;
+  --c-success-muted: rgba(34, 197, 94, 0.15);
+  --c-warning: #fbbf24;
+  --c-warning-muted: rgba(251, 191, 36, 0.15);
+  --c-error: #ef4444;
+  --c-error-muted: rgba(239, 68, 68, 0.15);
+  --c-info: #3b82f6;
+  --c-info-muted: rgba(59, 130, 246, 0.15);
+
+  /* ── No gradients in neo-brutalism — flat colors ── */
+  --g-accent: #3b82f6;
+  --g-accent-vibrant: #3b82f6;
+  --g-dark: #1a1a1a;
+  --g-hero: #fdf6ec;
+  --g-hero-dark: #1a1a1a;
+  --g-card: #ffffff;
+  --g-shimmer: none;
+
+  /* ── Neo-Brutalism Shadows (hard, offset, no blur) ── */
+  --shadow-xs: 2px 2px 0px #1a1a1a;
+  --shadow-sm: 3px 3px 0px #1a1a1a;
+  --shadow-md: 4px 4px 0px #1a1a1a;
+  --shadow-lg: 6px 6px 0px #1a1a1a;
+  --shadow-xl: 8px 8px 0px #1a1a1a;
+  --shadow-2xl: 10px 10px 0px #1a1a1a;
+  --shadow-accent: 4px 4px 0px #3b82f6;
+  --shadow-accent-lg: 6px 6px 0px #3b82f6;
+  --shadow-coral: 4px 4px 0px #ff6b6b;
+  --shadow-lime: 4px 4px 0px #a3e635;
+
+  /* ── Glass Effects (disabled — neo-brutalism is flat) ── */
+  --glass-bg: #ffffff;
+  --glass-bg-hover: #fdf6ec;
+  --glass-border: #1a1a1a;
+  --glass-border-hover: #1a1a1a;
+
+  /* ── Builder-specific (dark editor — neo-brutalism) ── */
+  --c-builder-bg: #1a1a1a;
+  --c-builder-card: #2d2d2d;
+  --c-builder-card-solid: #333333;
+  --c-builder-input: #404040;
+  --c-builder-input-border: #525252;
+  --c-builder-accent: #3b82f6;
+
+  /* ── Spacing Scale ── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+  --space-5xl: 128px;
+
+  /* ── Border Radius (chunky for neo-brutalism) ── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* ── Transitions (snappy for neo-brutalism) ── */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 250ms;
+}

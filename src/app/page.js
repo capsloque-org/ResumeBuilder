@@ -1,436 +1,666 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
+import Link from "next/link";
+import { motion, useInView } from "framer-motion";
+import { useRef, useState } from "react";
 import {
-  FileText, ArrowRight, Sparkles, Shield, Zap, Download,
-  Layout, Palette, Clock, CheckCircle2, Star, Users,
-  ChevronRight, Play, Award, Target, Briefcase
-} from 'lucide-react';
-import LandingNavbar from './components/LandingNavbar';
-import Footer from './components/Footer';
+  FileText,
+  ArrowRight,
+  Shield,
+  Zap,
+  Download,
+  Layout,
+  Palette,
+  Clock,
+  Star,
+  Users,
+  Award,
+  Target,
+  Eye,
+  MousePointerClick,
+  BarChart3,
+  Check,
+} from "lucide-react";
+import LandingNavbar from "./components/LandingNavbar";
+import Footer from "./components/Footer";
 
-// Animated Background Orbs
-function AnimatedOrbs() {
+/* ============================================================
+   ANIMATION VARIANTS
+   ============================================================ */
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
+};
+
+/* ============================================================
+   SECTION WRAPPER
+   ============================================================ */
+function Section({ children, className = "", id, alt = false }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Primary orbs */}
+    <section
+      id={id}
+      ref={ref}
+      className={`relative py-24 lg:py-32 ${alt ? "bg-[var(--c-bg-secondary)]" : "bg-[var(--c-bg-primary)]"} ${className}`}
+    >
       <motion.div
-        animate={{
-          x: [0, 100, 0],
-          y: [0, -50, 0],
-          scale: [1, 1.2, 1],
-        }}
-        transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-full blur-3xl"
-      />
-      <motion.div
-        animate={{
-          x: [0, -80, 0],
-          y: [0, 60, 0],
-          scale: [1, 1.3, 1],
-        }}
-        transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute top-1/2 right-1/4 w-80 h-80 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur-3xl"
-      />
-      <motion.div
-        animate={{
-          x: [0, 60, 0],
-          y: [0, -80, 0],
-          scale: [1, 1.1, 1],
-        }}
-        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-        className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-to-r from-purple-500/15 to-pink-500/15 rounded-full blur-3xl"
-      />
-
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                          linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-        backgroundSize: '50px 50px'
-      }} />
-    </div>
-  );
-}
-
-// Hero Section - Premium Version
-function HeroSection() {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden hero-bg">
-      <AnimatedOrbs />
-
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0f172a]/50" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Left Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-xl rounded-full text-white/90 text-sm mb-8 border border-white/10"
-            >
-              <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-              >
-                <Sparkles className="w-4 h-4 text-yellow-400" />
-              </motion.div>
-              <span className="font-medium">Trusted by 50,000+ job seekers</span>
-            </motion.div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-6">
-              Build Your Perfect
-              <motion.span
-                className="block gradient-text mt-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                Resume in Minutes
-              </motion.span>
-            </h1>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="text-lg lg:text-xl text-white/70 mb-10 max-w-xl leading-relaxed"
-            >
-              Create professional, ATS-friendly resumes that stand out. Our intuitive builder helps you craft the perfect resume to land your dream job.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 mb-14"
-            >
-              <Link href="/builder">
-                <motion.button
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center justify-center gap-3 px-8 py-4 premium-btn text-white font-semibold rounded-full text-lg"
-                >
-                  Create Your Resume
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
-              </Link>
-              <motion.button
-                whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.15)" }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center justify-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-xl text-white font-semibold rounded-full border border-white/20 transition-all"
-              >
-                <Play className="w-5 h-5" />
-                Watch Demo
-              </motion.button>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="grid grid-cols-3 gap-8"
-            >
-              {[
-                { value: '50K+', label: 'Resumes Created' },
-                { value: '95%', label: 'Success Rate' },
-                { value: '4.9', label: 'Rating', hasIcon: true },
-              ].map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9 + i * 0.1 }}
-                  className="text-center sm:text-left"
-                >
-                  <div className="text-3xl lg:text-4xl font-bold text-white mb-1">{stat.value}</div>
-                  <div className="text-white/50 text-sm flex items-center gap-1 justify-center sm:justify-start">
-                    {stat.hasIcon && <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />}
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* Right Content - Resume Preview */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="relative hidden lg:block"
-          >
-            <div className="relative">
-              {/* Glow effect behind card */}
-              <div className="absolute inset-0 bg-gradient-to-r from-red-500/30 to-orange-500/30 blur-3xl scale-110 opacity-50" />
-
-              {/* Main Resume Card */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="relative bg-white rounded-2xl shadow-2xl p-8 transform rotate-2 hover:rotate-0 transition-all duration-500"
-              >
-                <div className="border-t-4 border-[#1e3a5f] pt-6">
-                  <div className="h-5 w-36 bg-slate-800 rounded mb-3" />
-                  <div className="h-3 w-52 bg-slate-300 rounded mb-5" />
-                  <div className="space-y-2.5 mb-5">
-                    <div className="h-2.5 w-full bg-slate-100 rounded" />
-                    <div className="h-2.5 w-5/6 bg-slate-100 rounded" />
-                    <div className="h-2.5 w-4/6 bg-slate-100 rounded" />
-                  </div>
-                  <div className="h-4 w-28 bg-slate-800 rounded mb-3" />
-                  <div className="space-y-2">
-                    <div className="h-2.5 w-full bg-slate-100 rounded" />
-                    <div className="h-2.5 w-5/6 bg-slate-100 rounded" />
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Floating Badge */}
-              <motion.div
-                animate={{ y: [0, -8, 0], rotate: [0, 2, 0] }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -top-4 -right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-5 py-2.5 rounded-full text-sm font-semibold shadow-xl flex items-center gap-2"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                ATS Optimized
-              </motion.div>
-
-              {/* Template Cards */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, x: -20 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
-                transition={{ delay: 0.7 }}
-                className="absolute -bottom-6 -left-6 premium-glass-light rounded-2xl shadow-xl p-5 flex items-center gap-4"
-              >
-                <div className="flex -space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-[#1e3a5f] to-[#2d4a6f] rounded-xl shadow-lg" />
-                  <div className="w-10 h-10 bg-gradient-to-br from-[#dc2626] to-[#ef4444] rounded-xl shadow-lg" />
-                  <div className="w-10 h-10 bg-gradient-to-br from-slate-700 to-slate-900 rounded-xl shadow-lg" />
-                </div>
-                <div>
-                  <div className="text-sm font-bold text-slate-800">3+ Templates</div>
-                  <div className="text-xs text-slate-500">Professional Designs</div>
-                </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        animate={{ y: [0, 12, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        initial="hidden"
+        animate={isInView ? "visible" : "hidden"}
+        variants={staggerContainer}
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
       >
-        <div className="w-7 h-12 border-2 border-white/30 rounded-full flex justify-center pt-2">
-          <motion.div
-            animate={{ opacity: [0.5, 1, 0.5], y: [0, 8, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-1.5 h-3 bg-white/60 rounded-full"
-          />
-        </div>
+        {children}
       </motion.div>
     </section>
   );
 }
 
-// Features Section - Premium
+/* ============================================================
+   SECTION HEADER
+   ============================================================ */
+function SectionHeader({ badge, title, highlight, description }) {
+  return (
+    <motion.div
+      variants={fadeUp}
+      className="text-center mb-16 lg:mb-20 max-w-3xl mx-auto"
+    >
+      {badge && (
+        <span className="btn-pill text-xs mb-6 inline-flex">{badge}</span>
+      )}
+      <h2 className="text-3xl lg:text-5xl font-bold text-[var(--c-text-primary)] mb-5 tracking-tight">
+        {title}{" "}
+        {highlight && <span className="gradient-text">{highlight}</span>}
+      </h2>
+      {description && (
+        <p className="text-lg text-[var(--c-text-secondary)] leading-relaxed">
+          {description}
+        </p>
+      )}
+    </motion.div>
+  );
+}
+
+/* ============================================================
+   HERO SECTION — Clean split layout (cobalt blue + white)
+   ============================================================ */
+function HeroSection() {
+  return (
+    <section className="relative min-h-screen flex items-center bg-[var(--c-bg-primary)] overflow-hidden">
+      {/* Dot grid */}
+      <div className="dot-grid" />
+
+      {/* Bold decorative shapes */}
+      <div className="absolute top-1/3 right-[10%] w-32 h-32 bg-[var(--c-yellow)] border-3 border-[var(--c-border)] rotate-12 pointer-events-none opacity-40" />
+      <div className="absolute bottom-1/4 left-[15%] w-24 h-24 bg-[var(--c-coral)] border-3 border-[var(--c-border)] rounded-full pointer-events-none opacity-30" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          {/* Left — Copy */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="btn-pill text-xs mb-8"
+            >
+              <Zap className="w-3.5 h-3.5" />
+              <span>Trusted by 50,000+ job seekers</span>
+            </motion.div>
+
+            {/* Headline */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] font-extrabold text-[var(--c-text-primary)] leading-[1.08] tracking-tight mb-6">
+              Build Resumes That
+              <span className="gradient-text block mt-1">Get You Hired.</span>
+            </h1>
+
+            {/* Sub-copy */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-lg lg:text-xl text-[var(--c-text-secondary)] mb-10 max-w-xl leading-relaxed font-medium"
+            >
+              Create professional, ATS-optimized resumes in minutes. Choose from
+              expert-designed templates and land your dream job.
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="flex flex-col sm:flex-row gap-4 mb-14"
+            >
+              <Link href="/builder">
+                <button className="btn-primary text-lg px-8 py-4 font-bold w-full sm:w-auto">
+                  Create Your Resume
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </Link>
+              <a href="#templates">
+                <button className="btn-secondary text-lg px-8 py-4 font-bold w-full sm:w-auto">
+                  <Eye className="w-5 h-5" />
+                  View Templates
+                </button>
+              </a>
+            </motion.div>
+
+            {/* Stats row */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="grid grid-cols-3 gap-8"
+            >
+              {[
+                { value: "50K+", label: "Resumes Created" },
+                { value: "95%", label: "ATS Pass Rate" },
+                { value: "4.9", label: "User Rating", icon: true },
+              ].map((stat) => (
+                <div key={stat.label}>
+                  <div className="text-2xl lg:text-3xl font-bold text-[var(--c-text-primary)] tracking-tight">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm text-[var(--c-text-muted)] flex items-center gap-1 mt-1">
+                    {stat.icon && (
+                      <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                    )}
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Right — Resume mockup */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="relative hidden lg:flex justify-center"
+          >
+            {/* Glow behind */}
+            <div className="absolute inset-0 bg-[var(--c-yellow)] opacity-20 rounded-none" />
+
+            {/* Resume card */}
+            <motion.div
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+              className="relative bg-[var(--c-bg-surface)] p-8 w-[340px] border-3 border-[var(--c-border)] shadow-[6px_6px_0_var(--c-border)]"
+            >
+              <div className="border-t-4 border-[var(--c-accent)] pt-5">
+                <div className="h-5 w-36 bg-[var(--c-text-primary)] mb-2" />
+                <div className="h-3 w-48 bg-[var(--c-text-muted)] mb-5" />
+                <div className="space-y-2 mb-5">
+                  <div className="h-2.5 w-full bg-[var(--c-bg-tertiary)]" />
+                  <div className="h-2.5 w-5/6 bg-[var(--c-bg-tertiary)]" />
+                  <div className="h-2.5 w-4/6 bg-[var(--c-bg-tertiary)]" />
+                </div>
+                <div className="h-4 w-24 bg-[var(--c-text-primary)] mb-3" />
+                <div className="space-y-2 mb-5">
+                  <div className="h-2.5 w-full bg-[var(--c-bg-tertiary)]" />
+                  <div className="h-2.5 w-5/6 bg-[var(--c-bg-tertiary)]" />
+                </div>
+                <div className="h-4 w-20 bg-[var(--c-text-primary)] mb-3" />
+                <div className="flex gap-2 flex-wrap">
+                  {["React", "Node.js", "TypeScript", "AWS"].map((s) => (
+                    <span
+                      key={s}
+                      className="text-[9px] px-2 py-1 bg-[var(--c-accent)] text-white border border-[var(--c-border)] font-bold"
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* ATS Badge */}
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 4, repeat: Infinity, delay: 1 }}
+              className="absolute -top-3 -right-3 bg-[var(--c-lime)] text-[var(--c-text-primary)] px-4 py-2 text-sm font-bold shadow-[3px_3px_0_var(--c-border)] border-2 border-[var(--c-border)] flex items-center gap-2"
+            >
+              <Check className="w-4 h-4" />
+              ATS Optimized
+            </motion.div>
+
+            {/* Template count badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.8 }}
+              className="absolute -bottom-4 -left-4 bg-[var(--c-bg-surface)] px-5 py-3 flex items-center gap-3 border-2 border-[var(--c-border)] shadow-[4px_4px_0_var(--c-border)]"
+            >
+              <div className="flex -space-x-2">
+                <div className="w-8 h-8 bg-[var(--c-accent)] border border-[var(--c-border)] shadow" />
+                <div className="w-8 h-8 bg-[var(--c-coral)] border border-[var(--c-border)] shadow" />
+                <div className="w-8 h-8 bg-[var(--c-yellow)] border border-[var(--c-border)] shadow" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-[var(--c-text-primary)]">
+                  3+ Templates
+                </div>
+                <div className="text-[10px] text-[var(--c-text-muted)] font-bold">
+                  Pro Designs
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   LOGO CLOUD
+   ============================================================ */
+function LogoCloud() {
+  const logos = [
+    "Forbes",
+    "TechCrunch",
+    "Product Hunt",
+    "G2",
+    "Capterra",
+    "Y Combinator",
+    "Inc Magazine",
+    "Fast Company",
+  ];
+
+  // Triple logos for ultra-smooth seamless loop
+  const tripleLogos = [...logos, ...logos, ...logos];
+
+  return (
+    <section className="py-12 bg-[var(--c-bg-secondary)] border-y-3 border-[var(--c-border)] overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+        <p className="text-center text-xs text-[var(--c-text-muted)] tracking-widest uppercase font-bold">
+          As featured in
+        </p>
+      </div>
+      <div className="relative">
+        {/* Fade edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[var(--c-bg-secondary)] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[var(--c-bg-secondary)] to-transparent z-10 pointer-events-none" />
+
+        {/* Scrolling track */}
+        <div className="marquee-track">
+          {tripleLogos.map((name, i) => (
+            <div
+              key={`${name}-${i}`}
+              className="flex-shrink-0 mx-10 lg:mx-16 px-6 py-3 bg-white/60 border-2 border-[var(--c-border)] shadow-[2px_2px_0_var(--c-border)] hover:shadow-[3px_3px_0_var(--c-border)] hover:-translate-x-0.5 hover:-translate-y-0.5 transition-all duration-200 cursor-default group"
+            >
+              <span className="text-[var(--c-text-primary)] font-black text-base lg:text-lg tracking-tight select-none group-hover:text-[var(--c-accent)] transition-colors">
+                {name}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ============================================================
+   FEATURES SECTION
+   ============================================================ */
 function FeaturesSection() {
   const features = [
     {
       icon: Layout,
-      title: 'Professional Templates',
-      description: 'Choose from our collection of ATS-friendly, professionally designed templates.',
-      gradient: 'from-blue-500 to-cyan-500'
+      title: "Professional Templates",
+      description:
+        "Expert-designed, ATS-friendly templates that recruiters love. Every layout is optimized for readability.",
+      color:
+        "text-[var(--c-accent)] bg-[var(--c-accent)]/10 border-2 border-[var(--c-accent)]",
     },
     {
       icon: Zap,
-      title: 'Lightning Fast',
-      description: 'Create a stunning resume in under 10 minutes with our intuitive editor.',
-      gradient: 'from-yellow-500 to-orange-500'
+      title: "Built in Minutes",
+      description:
+        "Intuitive step-by-step editor guides you through each section. Your resume is ready in under 10 minutes.",
+      color:
+        "text-[var(--c-yellow)] bg-[var(--c-yellow)]/15 border-2 border-[var(--c-yellow)]",
     },
     {
       icon: Shield,
-      title: 'ATS Optimized',
-      description: 'Our resumes are optimized to pass Applicant Tracking Systems effortlessly.',
-      gradient: 'from-green-500 to-emerald-500'
+      title: "ATS Optimized",
+      description:
+        "Every resume passes Applicant Tracking Systems. Clean formatting that machines and humans both love.",
+      color:
+        "text-[var(--c-lime)] bg-[var(--c-lime)]/15 border-2 border-[var(--c-lime)]",
     },
     {
       icon: Download,
-      title: 'Easy Export',
-      description: 'Download your resume as a PDF with perfect formatting every time.',
-      gradient: 'from-purple-500 to-pink-500'
+      title: "PDF Export",
+      description:
+        "Download pixel-perfect PDF resumes instantly. What you see is exactly what recruiters get.",
+      color:
+        "text-[var(--c-violet)] bg-[var(--c-violet)]/15 border-2 border-[var(--c-violet)]",
     },
     {
       icon: Palette,
-      title: 'Customizable',
-      description: 'Personalize colors, fonts, and layouts to match your style.',
-      gradient: 'from-pink-500 to-rose-500'
+      title: "Fully Customizable",
+      description:
+        "Reorder sections, toggle visibility, and personalize every detail to match your unique career story.",
+      color:
+        "text-[var(--c-coral)] bg-[var(--c-coral)]/15 border-2 border-[var(--c-coral)]",
     },
     {
       icon: Clock,
-      title: 'Auto Save',
-      description: 'Never lose your progress with automatic saving to local storage.',
-      gradient: 'from-orange-500 to-red-500'
-    }
+      title: "Auto Save",
+      description:
+        "Your progress saves automatically to the cloud. Pick up right where you left off, on any device.",
+      color: "text-teal-600 bg-teal-100 border-2 border-teal-600",
+    },
   ];
 
   return (
-    <section id="features" className="py-24 lg:py-32 bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-100 rounded-full blur-3xl opacity-30" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-30" />
+    <Section id="features" alt>
+      <SectionHeader
+        badge="Features"
+        title="Content-Focused Features"
+        highlight="Developed to Get You Hired"
+        description="Everything you need to build a resume that stands out in a stack of hundreds."
+      />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-block px-5 py-2 bg-red-50 text-[#dc2626] rounded-full text-sm font-semibold mb-6 border border-red-100"
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {features.map((feature) => (
+          <motion.div
+            key={feature.title}
+            variants={fadeUp}
+            className="feature-card group cursor-default"
           >
-            Features
-          </motion.span>
-          <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 mb-6">
-            Everything You Need to Build
-            <span className="gradient-text block mt-2">the Perfect Resume</span>
-          </h2>
-          <p className="text-lg lg:text-xl text-slate-600 max-w-2xl mx-auto">
-            Our powerful features make resume building effortless and professional.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+            <div
+              className={`w-12 h-12 flex items-center justify-center mb-5 ${feature.color} transition-transform group-hover:scale-110 duration-200`}
             >
-              <motion.div
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="feature-card h-full"
-              >
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className={`w-14 h-14 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 shadow-lg`}
-                >
-                  <feature.icon className="w-7 h-7 text-white" />
-                </motion.div>
-                <h3 className="text-xl font-bold text-slate-800 mb-3">{feature.title}</h3>
-                <p className="text-slate-600 leading-relaxed">{feature.description}</p>
-              </motion.div>
-            </motion.div>
-          ))}
-        </div>
+              <feature.icon className="w-6 h-6" />
+            </div>
+            <h3 className="text-lg font-bold text-[var(--c-text-primary)] mb-2">
+              {feature.title}
+            </h3>
+            <p className="text-[var(--c-text-secondary)] text-sm leading-relaxed">
+              {feature.description}
+            </p>
+          </motion.div>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }
 
-// Sample resume data for preview
-const sampleResumeData = {
-  name: 'Sarah Johnson',
-  title: 'Senior Software Engineer',
-  email: 'sarah.johnson@email.com',
-  phone: '(555) 123-4567',
-  location: 'San Francisco, CA',
-  summary: 'Passionate software engineer with 5+ years of experience building scalable web applications. Expert in React, Node.js, and cloud technologies.',
+/* ============================================================
+   SHOWCASE SECTION
+   ============================================================ */
+function ShowcaseSection() {
+  const [activeTab, setActiveTab] = useState(0);
+
+  const tabs = [
+    {
+      label: "ATS Keyword Targeting",
+      icon: Target,
+      title: "Beat the ATS every time.",
+      description:
+        "Our templates and formatting are specifically designed to pass through Applicant Tracking Systems. Clean HTML-friendly structure, proper heading hierarchy, and keyword-optimized layouts.",
+      features: [
+        "Machine-readable formatting",
+        "Proper section hierarchy",
+        "Keyword-friendly structure",
+        "Zero fancy graphics that break ATS",
+      ],
+    },
+    {
+      label: "Real-Time Preview",
+      icon: Eye,
+      title: "See changes as you type.",
+      description:
+        "Our live preview engine renders your resume in real-time as you edit. Switch between templates instantly and see exactly how your final PDF will look — no surprises.",
+      features: [
+        "Instant template switching",
+        "Live content rendering",
+        "Pixel-perfect PDF match",
+        "Zoom & scroll controls",
+      ],
+    },
+    {
+      label: "Smart Editor",
+      icon: MousePointerClick,
+      title: "Guided, intelligent editing.",
+      description:
+        "The editor walks you through each section with clear labels, smart defaults, and formatting tools. Bold text, bullet points, and visibility toggles — all built-in.",
+      features: [
+        "Step-by-step section flow",
+        "Rich text formatting",
+        "Drag-to-reorder sections",
+        "Field visibility toggles",
+      ],
+    },
+  ];
+
+  const active = tabs[activeTab];
+
+  return (
+    <Section id="showcase">
+      <SectionHeader
+        badge="How It Works"
+        title="Every Detail,"
+        highlight="Thoughtfully Crafted"
+        description="Built for people who care about the details. Every feature is designed to make your resume better."
+      />
+
+      <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-start">
+        {/* Tab buttons */}
+        <div className="lg:col-span-2 flex flex-col gap-3">
+          {tabs.map((tab, i) => (
+            <motion.button
+              key={tab.label}
+              variants={fadeUp}
+              onClick={() => setActiveTab(i)}
+              className={`flex items-center gap-4 p-5 text-left transition-all duration-200 border-2 ${
+                activeTab === i
+                  ? "bg-[var(--c-bg-tertiary)] border-[var(--c-accent)] shadow-[4px_4px_0_var(--c-accent)]"
+                  : "bg-[var(--c-bg-surface)] border-[var(--c-border)] hover:border-[var(--c-text-muted)] hover:shadow-[2px_2px_0_var(--c-border)]"
+              }`}
+            >
+              <div
+                className={`w-10 h-10 flex items-center justify-center flex-shrink-0 ${
+                  activeTab === i
+                    ? "bg-[var(--c-accent)] text-white border-2 border-[var(--c-border)]"
+                    : "bg-[var(--c-bg-tertiary)] text-[var(--c-text-muted)] border-2 border-[var(--c-border)]"
+                }`}
+              >
+                <tab.icon className="w-5 h-5" />
+              </div>
+              <div>
+                <div
+                  className={`font-semibold text-sm ${activeTab === i ? "text-[var(--c-accent)]" : "text-[var(--c-text-primary)]"}`}
+                >
+                  {tab.label}
+                </div>
+              </div>
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Content panel */}
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="lg:col-span-3 bg-[var(--c-bg-surface)] border-2 border-[var(--c-border)] p-8 lg:p-10 shadow-[4px_4px_0_var(--c-border)]"
+        >
+          <h3 className="text-2xl lg:text-3xl font-bold text-[var(--c-text-primary)] mb-4 tracking-tight">
+            {active.title}
+          </h3>
+          <p className="text-[var(--c-text-secondary)] leading-relaxed mb-8">
+            {active.description}
+          </p>
+          <ul className="space-y-3">
+            {active.features.map((f) => (
+              <li
+                key={f}
+                className="flex items-center gap-3 text-[var(--c-text-secondary)]"
+              >
+                <div className="w-5 h-5 bg-[var(--c-accent)] flex items-center justify-center flex-shrink-0 border border-[var(--c-border)]">
+                  <Check className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-sm">{f}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      </div>
+    </Section>
+  );
+}
+
+/* ============================================================
+   SAMPLE RESUME DATA
+   ============================================================ */
+const sampleData = {
+  name: "Sarah Johnson",
+  title: "Senior Software Engineer",
+  email: "sarah@email.com",
+  phone: "(555) 123-4567",
+  location: "San Francisco, CA",
+  summary:
+    "Passionate engineer with 5+ years building scalable web apps. Expert in React, Node.js, and cloud.",
   experience: [
-    { company: 'TechCorp Inc.', position: 'Senior Software Engineer', date: '2022 - Present' },
-    { company: 'StartupXYZ', position: 'Software Engineer', date: '2019 - 2022' }
+    {
+      company: "TechCorp Inc.",
+      position: "Senior Engineer",
+      date: "2022 — Present",
+    },
+    {
+      company: "StartupXYZ",
+      position: "Software Engineer",
+      date: "2019 — 2022",
+    },
   ],
-  education: { school: 'Stanford University', degree: 'B.S. Computer Science', year: '2019' },
-  skills: ['React', 'Node.js', 'TypeScript', 'AWS', 'Python']
+  education: {
+    school: "Stanford University",
+    degree: "B.S. Computer Science",
+    year: "2019",
+  },
+  skills: ["React", "Node.js", "TypeScript", "AWS", "Python"],
 };
 
-// Minimalist Template Preview
-function MinimalistPreview() {
+/* ============================================================
+   TEMPLATE PREVIEWS
+   ============================================================ */
+function MinimalistMini() {
   return (
-    <div className="h-full p-4 font-serif text-slate-800 text-[10px] leading-relaxed overflow-hidden">
+    <div className="p-5 font-serif text-slate-800 text-[10px] leading-relaxed h-full">
       <header className="text-center border-b-2 border-slate-800 pb-2 mb-3">
-        <h1 className="text-sm font-bold uppercase tracking-wide">{sampleResumeData.name}</h1>
-        <p className="text-[8px] text-slate-600">{sampleResumeData.email} • {sampleResumeData.phone} • {sampleResumeData.location}</p>
+        <div className="text-sm font-bold uppercase tracking-wide">
+          {sampleData.name}
+        </div>
+        <div className="text-[8px] text-slate-500 mt-0.5">
+          {sampleData.email} &bull; {sampleData.phone} &bull;{" "}
+          {sampleData.location}
+        </div>
       </header>
       <section className="mb-2">
-        <h2 className="text-[9px] font-bold uppercase tracking-wide border-b border-slate-300 pb-0.5 mb-1">Summary</h2>
-        <p className="text-[8px] text-slate-700 line-clamp-2">{sampleResumeData.summary}</p>
+        <div className="text-[9px] font-bold uppercase tracking-wide border-b border-slate-300 pb-0.5 mb-1">
+          Summary
+        </div>
+        <p className="text-[8px] text-slate-600 line-clamp-2">
+          {sampleData.summary}
+        </p>
       </section>
       <section className="mb-2">
-        <h2 className="text-[9px] font-bold uppercase tracking-wide border-b border-slate-300 pb-0.5 mb-1">Experience</h2>
-        {sampleResumeData.experience.map((exp, i) => (
+        <div className="text-[9px] font-bold uppercase tracking-wide border-b border-slate-300 pb-0.5 mb-1">
+          Experience
+        </div>
+        {sampleData.experience.map((e, i) => (
           <div key={i} className="mb-1">
             <div className="flex justify-between">
-              <span className="font-semibold text-[8px]">{exp.position}</span>
-              <span className="text-[7px] text-slate-500">{exp.date}</span>
+              <span className="font-semibold text-[8px]">{e.position}</span>
+              <span className="text-[7px] text-slate-400">{e.date}</span>
             </div>
-            <p className="text-[7px] text-slate-600">{exp.company}</p>
+            <p className="text-[7px] text-slate-500">{e.company}</p>
           </div>
         ))}
       </section>
-      <section className="mb-2">
-        <h2 className="text-[9px] font-bold uppercase tracking-wide border-b border-slate-300 pb-0.5 mb-1">Education</h2>
-        <p className="text-[8px] font-semibold">{sampleResumeData.education.school}</p>
-        <p className="text-[7px] text-slate-600">{sampleResumeData.education.degree}, {sampleResumeData.education.year}</p>
-      </section>
       <section>
-        <h2 className="text-[9px] font-bold uppercase tracking-wide border-b border-slate-300 pb-0.5 mb-1">Skills</h2>
-        <p className="text-[8px] text-slate-700">{sampleResumeData.skills.join(' • ')}</p>
+        <div className="text-[9px] font-bold uppercase tracking-wide border-b border-slate-300 pb-0.5 mb-1">
+          Skills
+        </div>
+        <p className="text-[8px] text-slate-600">
+          {sampleData.skills.join(" • ")}
+        </p>
       </section>
     </div>
   );
 }
 
-// Modern Template Preview
-function ModernPreview() {
+function ModernMini() {
   return (
-    <div className="h-full p-4 text-slate-800 text-[10px] leading-relaxed overflow-hidden">
-      <header className="border-l-4 border-[#dc2626] pl-3 mb-3">
-        <h1 className="text-sm font-bold text-[#1e3a5f]">{sampleResumeData.name}</h1>
-        <p className="text-[9px] text-[#dc2626] font-medium">{sampleResumeData.title}</p>
-        <p className="text-[7px] text-slate-500">{sampleResumeData.email} • {sampleResumeData.location}</p>
+    <div className="p-5 text-slate-800 text-[10px] leading-relaxed h-full">
+      <header className="border-l-4 border-[var(--c-accent)] pl-3 mb-3">
+        <div className="text-sm font-bold text-slate-900">
+          {sampleData.name}
+        </div>
+        <div className="text-[9px] text-[var(--c-accent)] font-medium">
+          {sampleData.title}
+        </div>
+        <div className="text-[7px] text-slate-400">
+          {sampleData.email} &bull; {sampleData.location}
+        </div>
       </header>
       <section className="mb-2">
-        <h2 className="text-[9px] font-bold text-[#1e3a5f] uppercase flex items-center gap-1 mb-1">
-          <span className="w-4 h-0.5 bg-[#dc2626]"></span>About
-        </h2>
-        <p className="text-[8px] text-slate-600 line-clamp-2">{sampleResumeData.summary}</p>
+        <div className="text-[9px] font-bold text-slate-900 uppercase flex items-center gap-1 mb-1">
+          <span className="w-4 h-0.5 bg-[var(--c-accent)]" />
+          About
+        </div>
+        <p className="text-[8px] text-slate-500 line-clamp-2">
+          {sampleData.summary}
+        </p>
       </section>
       <section className="mb-2">
-        <h2 className="text-[9px] font-bold text-[#1e3a5f] uppercase flex items-center gap-1 mb-1">
-          <span className="w-4 h-0.5 bg-[#dc2626]"></span>Experience
-        </h2>
-        {sampleResumeData.experience.map((exp, i) => (
+        <div className="text-[9px] font-bold text-slate-900 uppercase flex items-center gap-1 mb-1">
+          <span className="w-4 h-0.5 bg-[var(--c-accent)]" />
+          Experience
+        </div>
+        {sampleData.experience.map((e, i) => (
           <div key={i} className="mb-1 pl-2 border-l border-slate-200">
-            <span className="font-semibold text-[8px] text-[#1e3a5f]">{exp.position}</span>
-            <p className="text-[7px] text-slate-600">{exp.company} • {exp.date}</p>
+            <span className="font-semibold text-[8px]">{e.position}</span>
+            <p className="text-[7px] text-slate-500">
+              {e.company} &bull; {e.date}
+            </p>
           </div>
         ))}
       </section>
       <section>
-        <h2 className="text-[9px] font-bold text-[#1e3a5f] uppercase flex items-center gap-1 mb-1">
-          <span className="w-4 h-0.5 bg-[#dc2626]"></span>Skills
-        </h2>
+        <div className="text-[9px] font-bold text-slate-900 uppercase flex items-center gap-1 mb-1">
+          <span className="w-4 h-0.5 bg-[var(--c-accent)]" />
+          Skills
+        </div>
         <div className="flex flex-wrap gap-1">
-          {sampleResumeData.skills.slice(0, 4).map((skill, i) => (
-            <span key={i} className="px-1.5 py-0.5 bg-slate-100 text-[7px] rounded">{skill}</span>
+          {sampleData.skills.slice(0, 4).map((s) => (
+            <span
+              key={s}
+              className="px-1.5 py-0.5 bg-blue-50 text-[var(--c-accent)] text-[7px] rounded"
+            >
+              {s}
+            </span>
           ))}
         </div>
       </section>
@@ -438,252 +668,255 @@ function ModernPreview() {
   );
 }
 
-// Executive Template Preview
-function ExecutivePreview() {
+function ExecutiveMini() {
   return (
-    <div className="h-full p-4 text-slate-800 text-[10px] leading-relaxed overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+    <div className="p-5 text-slate-800 text-[10px] leading-relaxed h-full bg-gradient-to-b from-slate-50 to-white">
       <header className="text-center border-b-2 border-double border-slate-800 pb-2 mb-3">
-        <h1 className="text-sm font-bold tracking-widest uppercase">{sampleResumeData.name}</h1>
-        <p className="text-[9px] text-slate-600 tracking-wide">{sampleResumeData.title}</p>
-        <p className="text-[7px] text-slate-500 mt-1">{sampleResumeData.email} | {sampleResumeData.phone}</p>
+        <div className="text-sm font-bold tracking-[0.2em] uppercase">
+          {sampleData.name}
+        </div>
+        <div className="text-[9px] text-slate-500 tracking-wide">
+          {sampleData.title}
+        </div>
+        <div className="text-[7px] text-slate-400 mt-1">
+          {sampleData.email} | {sampleData.phone}
+        </div>
       </header>
       <section className="mb-2">
-        <h2 className="text-[9px] font-bold uppercase tracking-widest text-center mb-1">
-          <span className="border-b border-slate-400 pb-0.5">Professional Summary</span>
-        </h2>
-        <p className="text-[8px] text-slate-700 text-center italic line-clamp-2">{sampleResumeData.summary}</p>
+        <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-center mb-1">
+          <span className="border-b border-slate-400 pb-0.5">
+            Professional Summary
+          </span>
+        </div>
+        <p className="text-[8px] text-slate-600 text-center italic line-clamp-2">
+          {sampleData.summary}
+        </p>
       </section>
       <section className="mb-2">
-        <h2 className="text-[9px] font-bold uppercase tracking-widest text-center mb-1">
-          <span className="border-b border-slate-400 pb-0.5">Career History</span>
-        </h2>
-        {sampleResumeData.experience.map((exp, i) => (
+        <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-center mb-1">
+          <span className="border-b border-slate-400 pb-0.5">
+            Career History
+          </span>
+        </div>
+        {sampleData.experience.map((e, i) => (
           <div key={i} className="mb-1 text-center">
-            <p className="font-semibold text-[8px]">{exp.position}</p>
-            <p className="text-[7px] text-slate-600">{exp.company} | {exp.date}</p>
+            <p className="font-semibold text-[8px]">{e.position}</p>
+            <p className="text-[7px] text-slate-500">
+              {e.company} | {e.date}
+            </p>
           </div>
         ))}
       </section>
       <section>
-        <h2 className="text-[9px] font-bold uppercase tracking-widest text-center mb-1">
-          <span className="border-b border-slate-400 pb-0.5">Core Competencies</span>
-        </h2>
-        <p className="text-[8px] text-slate-700 text-center">{sampleResumeData.skills.join(' | ')}</p>
+        <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-center mb-1">
+          <span className="border-b border-slate-400 pb-0.5">
+            Core Competencies
+          </span>
+        </div>
+        <p className="text-[8px] text-slate-600 text-center">
+          {sampleData.skills.join(" | ")}
+        </p>
       </section>
     </div>
   );
 }
 
-// Templates Preview Section - Premium
+/* ============================================================
+   TEMPLATES SECTION
+   ============================================================ */
 function TemplatesSection() {
   const templates = [
     {
-      id: 'minimalist',
-      name: 'Minimalist',
-      color: 'border-t-slate-800',
-      description: 'Clean Harvard-style format',
-      preview: MinimalistPreview
+      id: "minimalist",
+      name: "Minimalist",
+      tag: "Harvard Style",
+      description:
+        "Clean, classic format trusted by top universities. Lets your content speak.",
+      preview: MinimalistMini,
     },
     {
-      id: 'modern',
-      name: 'Modern',
-      color: 'border-t-[#1e3a5f]',
-      description: 'Contemporary with accent colors',
-      preview: ModernPreview
+      id: "modern",
+      name: "Modern",
+      tag: "Recommended",
+      description:
+        "Contemporary design with color accents and clear hierarchy. Our most popular.",
+      preview: ModernMini,
     },
     {
-      id: 'executive',
-      name: 'Executive',
-      color: 'border-t-slate-800 border-double',
-      description: 'Professional and elegant',
-      preview: ExecutivePreview
+      id: "executive",
+      name: "Executive",
+      tag: "Senior Roles",
+      description:
+        "Elegant, refined layout for leadership and executive positions.",
+      preview: ExecutiveMini,
     },
   ];
 
   return (
-    <section id="templates" className="py-24 lg:py-32 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-1/2 left-0 w-72 h-72 bg-purple-100 rounded-full blur-3xl opacity-40" />
-      <div className="absolute top-1/4 right-0 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-40" />
+    <Section id="templates" alt>
+      <SectionHeader
+        badge="Templates"
+        title="ATS-Friendly Resume Templates"
+        highlight="Designed by Experts"
+        description="Every template is tested against real ATS systems. Pick one, fill in your details, and download."
+      />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-block px-5 py-2 bg-blue-50 text-[#1e3a5f] rounded-full text-sm font-semibold mb-6 border border-blue-100"
-          >
-            Templates
-          </motion.span>
-          <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 mb-6">
-            Professional Templates for
-            <span className="text-[#1e3a5f] block mt-2">Every Industry</span>
-          </h2>
-          <p className="text-lg lg:text-xl text-slate-600 max-w-2xl mx-auto">
-            Choose from our carefully crafted templates designed to impress recruiters.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
-          {templates.map((template, index) => (
-            <motion.div
-              key={template.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.15 }}
-              className="group"
-            >
-              <motion.div
-                whileHover={{ y: -12, scale: 1.02 }}
-                className="template-card"
-              >
-                <div className={`h-80 bg-white ${template.color} border-t-4 relative overflow-hidden`}>
-                  <template.preview />
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1e3a5f] via-[#1e3a5f]/90 to-[#1e3a5f]/80 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center backdrop-blur-sm">
-                    <Link href={`/builder?template=${template.id}`}>
-                      <motion.button
-                        whileHover={{ scale: 1.08 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-7 py-3.5 bg-white text-[#1e3a5f] font-bold rounded-full flex items-center gap-2 shadow-2xl"
-                      >
-                        Use Template
-                        <ArrowRight className="w-4 h-4" />
-                      </motion.button>
-                    </Link>
-                  </div>
+      <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        {templates.map((t) => (
+          <motion.div key={t.id} variants={fadeUp} className="group">
+            <div className="template-card">
+              {/* Preview */}
+              <div className="h-80 bg-white relative overflow-hidden">
+                <t.preview />
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-[var(--c-accent)] opacity-0 group-hover:opacity-90 transition-all duration-200 flex items-center justify-center">
+                  <Link href={`/builder?template=${t.id}`}>
+                    <button className="bg-white text-[var(--c-accent)] px-6 py-3 text-sm font-bold flex items-center gap-2 border-2 border-[var(--c-border)] shadow-[3px_3px_0_var(--c-border)] hover:shadow-[1px_1px_0_var(--c-border)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all">
+                      Use This Template
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </Link>
                 </div>
-                <div className="p-7 bg-white">
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">{template.name}</h3>
-                  <p className="text-slate-600">{template.description}</p>
+              </div>
+              {/* Info */}
+              <div className="p-6 border-t-2 border-[var(--c-border)]">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-lg font-bold text-[var(--c-text-primary)]">
+                    {t.name}
+                  </h3>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--c-accent)] bg-[var(--c-accent)]/10 px-2.5 py-1 border border-[var(--c-accent)]">
+                    {t.tag}
+                  </span>
                 </div>
-              </motion.div>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mt-14"
-        >
-          <Link href="/builder">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#1e3a5f] to-[#2d4a6f] text-white font-semibold rounded-full shadow-xl hover:shadow-2xl transition-shadow"
-            >
-              Try All Templates
-              <ChevronRight className="w-5 h-5" />
-            </motion.button>
-          </Link>
-        </motion.div>
+                <p className="text-sm text-[var(--c-text-secondary)]">
+                  {t.description}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
-    </section>
+
+      <motion.div variants={fadeUp} className="text-center mt-12">
+        <Link href="/builder">
+          <button className="btn-secondary px-8 py-4 text-sm">
+            Explore All Templates
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </Link>
+      </motion.div>
+    </Section>
   );
 }
 
-// How It Works Section - Premium
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
 function HowItWorksSection() {
   const steps = [
     {
-      number: '01',
-      title: 'Choose a Template',
-      description: 'Browse our collection of professional templates and pick the one that suits your style.',
+      number: "01",
+      title: "Choose a Template",
+      description:
+        "Browse our collection and pick the layout that fits your industry.",
       icon: Layout,
-      gradient: 'from-blue-500 to-cyan-500'
     },
     {
-      number: '02',
-      title: 'Fill in Your Details',
-      description: 'Add your information using our intuitive step-by-step editor with helpful guidance.',
+      number: "02",
+      title: "Fill Your Details",
+      description:
+        "Our guided editor walks you through each section step by step.",
       icon: FileText,
-      gradient: 'from-purple-500 to-pink-500'
     },
     {
-      number: '03',
-      title: 'Customize & Preview',
-      description: 'Personalize your resume and see real-time changes in the live preview.',
+      number: "03",
+      title: "Customize & Preview",
+      description:
+        "Reorder sections, toggle fields, and see changes in real-time.",
       icon: Palette,
-      gradient: 'from-orange-500 to-red-500'
     },
     {
-      number: '04',
-      title: 'Download & Apply',
-      description: 'Export your polished resume as a PDF and start applying to your dream jobs.',
+      number: "04",
+      title: "Download PDF",
+      description:
+        "Export your polished resume and start applying immediately.",
       icon: Download,
-      gradient: 'from-green-500 to-emerald-500'
-    }
+    },
   ];
 
   return (
-    <section id="how-it-works" className="py-24 lg:py-32 bg-white relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-green-50 rounded-full blur-3xl opacity-50" />
+    <Section>
+      <SectionHeader
+        badge="Process"
+        title="Resume Ready in"
+        highlight="4 Simple Steps"
+        description="From blank page to job-winning resume in under 10 minutes."
+      />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-block px-5 py-2 bg-green-50 text-green-700 rounded-full text-sm font-semibold mb-6 border border-green-100"
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {steps.map((step, i) => (
+          <motion.div
+            key={step.number}
+            variants={fadeUp}
+            className="relative group"
           >
-            How It Works
-          </motion.span>
-          <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 mb-6">
-            Create Your Resume in
-            <span className="text-green-600 block mt-2">4 Simple Steps</span>
-          </h2>
-          <p className="text-lg lg:text-xl text-slate-600 max-w-2xl mx-auto">
-            Our streamlined process makes resume building quick and effortless.
-          </p>
-        </motion.div>
+            {/* Connector line */}
+            {i < steps.length - 1 && (
+              <div className="hidden lg:block absolute top-10 left-[calc(100%_-_12px)] w-[calc(100%_-_56px)] h-[3px] bg-[var(--c-border)] z-0" />
+            )}
+            <div className="text-center relative z-10">
+              <div className="relative inline-flex mb-6">
+                <div className="w-16 h-16 bg-[var(--c-bg-tertiary)] border-2 border-[var(--c-border)] flex items-center justify-center group-hover:bg-[var(--c-accent)] group-hover:text-white transition-all duration-200 text-[var(--c-accent)] shadow-[3px_3px_0_var(--c-border)]">
+                  <step.icon className="w-7 h-7" />
+                </div>
+                <span className="absolute -top-2 -right-2 w-7 h-7 bg-[var(--c-accent)] text-white text-xs font-bold flex items-center justify-center border-2 border-[var(--c-border)] shadow-[2px_2px_0_var(--c-border)]">
+                  {step.number}
+                </span>
+              </div>
+              <h3 className="text-base font-bold text-[var(--c-text-primary)] mb-2">
+                {step.title}
+              </h3>
+              <p className="text-sm text-[var(--c-text-secondary)] leading-relaxed">
+                {step.description}
+              </p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </Section>
+  );
+}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-          {steps.map((step, index) => (
+/* ============================================================
+   STATS BAR
+   ============================================================ */
+function StatsBar() {
+  const stats = [
+    { icon: Users, value: "50,000+", label: "Active Users" },
+    { icon: FileText, value: "120,000+", label: "Resumes Created" },
+    { icon: Award, value: "95%", label: "ATS Pass Rate" },
+    { icon: BarChart3, value: "62%", label: "Interview Rate" },
+  ];
+
+  return (
+    <section className="py-16 bg-[var(--c-surface-dark)] border-y-3 border-[var(--c-border)]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          {stats.map((stat) => (
             <motion.div
-              key={step.number}
-              initial={{ opacity: 0, y: 30 }}
+              key={stat.label}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.15 }}
-              className="relative"
+              className="text-center"
             >
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-20 left-full w-full h-0.5 bg-gradient-to-r from-slate-200 via-slate-300 to-transparent -translate-x-8 z-0" />
-              )}
-              <motion.div
-                whileHover={{ y: -5 }}
-                className="text-center relative z-10"
-              >
-                <div className="relative inline-flex mb-8">
-                  <motion.div
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    className={`w-20 h-20 bg-gradient-to-br ${step.gradient} rounded-2xl flex items-center justify-center shadow-xl`}
-                  >
-                    <step.icon className="w-10 h-10 text-white" />
-                  </motion.div>
-                  <span className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-br from-[#dc2626] to-[#ef4444] text-white text-sm font-bold rounded-xl flex items-center justify-center shadow-lg">
-                    {step.number}
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-3">{step.title}</h3>
-                <p className="text-slate-600 leading-relaxed">{step.description}</p>
-              </motion.div>
+              <stat.icon className="w-6 h-6 text-[var(--c-yellow)] mx-auto mb-3" />
+              <div className="text-3xl lg:text-4xl font-bold text-white tracking-tight">
+                {stat.value}
+              </div>
+              <div className="text-sm text-slate-400 mt-1 font-bold">
+                {stat.label}
+              </div>
             </motion.div>
           ))}
         </div>
@@ -692,159 +925,144 @@ function HowItWorksSection() {
   );
 }
 
-// Testimonials Section - Premium
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
 function TestimonialsSection() {
   const testimonials = [
     {
-      name: 'Sarah Johnson',
-      role: 'Software Engineer at Google',
-      image: 'SJ',
-      content: 'ResumeForge helped me land my dream job! The templates are professional and the editor is so easy to use. Highly recommended!',
-      rating: 5
+      name: "Sarah Johnson",
+      role: "Software Engineer at Google",
+      initials: "SJ",
+      content:
+        "The ATS optimization gave me confidence. I started getting callbacks within a week of using my new resume.",
+      rating: 5,
     },
     {
-      name: 'Michael Chen',
-      role: 'Marketing Manager',
-      image: 'MC',
-      content: 'I created a stunning resume in just 15 minutes. The ATS optimization feature gave me confidence that my resume would get noticed.',
-      rating: 5
+      name: "Michael Chen",
+      role: "Marketing Manager",
+      initials: "MC",
+      content:
+        "Created a stunning resume in 15 minutes. The real-time preview is a game changer — I could perfect every detail.",
+      rating: 5,
     },
     {
-      name: 'Emily Rodriguez',
-      role: 'UX Designer at Meta',
-      image: 'ER',
-      content: 'The real-time preview feature is amazing! I could see exactly how my resume looked while editing. Best resume builder I have used.',
-      rating: 5
-    }
+      name: "Emily Rodriguez",
+      role: "UX Designer at Meta",
+      initials: "ER",
+      content:
+        "Best resume builder I have ever used. The templates are clean, professional, and actually pass ATS systems.",
+      rating: 5,
+    },
   ];
 
   return (
-    <section id="testimonials" className="py-24 lg:py-32 hero-bg relative overflow-hidden">
-      <AnimatedOrbs />
+    <Section id="testimonials" alt>
+      <SectionHeader
+        badge="Testimonials"
+        title="Trusted by Thousands of"
+        highlight="Successful Job Seekers"
+        description="Real stories from real people who landed their dream jobs."
+      />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="inline-block px-5 py-2 bg-white/10 backdrop-blur-sm text-white/90 rounded-full text-sm font-semibold mb-6 border border-white/10"
+      <div className="grid md:grid-cols-3 gap-6">
+        {testimonials.map((t) => (
+          <motion.div
+            key={t.name}
+            variants={fadeUp}
+            className="testimonial-card"
           >
-            Testimonials
-          </motion.span>
-          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6">
-            Loved by Job Seekers
-            <span className="gradient-text block mt-2">Worldwide</span>
-          </h2>
-          <p className="text-lg lg:text-xl text-white/70 max-w-2xl mx-auto">
-            See what our users have to say about their experience with CAPSLOQUE.
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.15 }}
-            >
-              <motion.div
-                whileHover={{ y: -8, scale: 1.02 }}
-                className="testimonial-card h-full"
-              >
-                <div className="flex gap-1 mb-6">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.1 * i }}
-                    >
-                      <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                    </motion.div>
-                  ))}
+            {/* Stars */}
+            <div className="flex gap-0.5 mb-5">
+              {[...Array(t.rating)].map((_, j) => (
+                <Star
+                  key={j}
+                  className="w-4 h-4 text-amber-400 fill-amber-400"
+                />
+              ))}
+            </div>
+            {/* Quote */}
+            <p className="text-[var(--c-text-secondary)] mb-6 leading-relaxed">
+              &ldquo;{t.content}&rdquo;
+            </p>
+            {/* Author */}
+            <div className="flex items-center gap-3 pt-4 border-t-2 border-[var(--c-border)]">
+              <div className="w-10 h-10 bg-[var(--c-accent)] flex items-center justify-center text-white font-bold text-sm border-2 border-[var(--c-border)]">
+                {t.initials}
+              </div>
+              <div>
+                <div className="font-bold text-sm text-[var(--c-text-primary)]">
+                  {t.name}
                 </div>
-                <p className="text-white/90 mb-8 leading-relaxed text-lg">&ldquo;{testimonial.content}&rdquo;</p>
-                <div className="flex items-center gap-4">
-                  <div className="avatar-ring">
-                    <div className="w-14 h-14 bg-gradient-to-br from-[#dc2626] to-[#f97316] rounded-full flex items-center justify-center text-white font-bold text-lg">
-                      {testimonial.image}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="font-bold text-white text-lg">{testimonial.name}</div>
-                    <div className="text-white/60">{testimonial.role}</div>
-                  </div>
+                <div className="text-xs text-[var(--c-text-muted)]">
+                  {t.role}
                 </div>
-              </motion.div>
-            </motion.div>
-          ))}
-        </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
-    </section>
+    </Section>
   );
 }
 
-// CTA Section - Premium
+/* ============================================================
+   FINAL CTA
+   ============================================================ */
 function CTASection() {
   return (
-    <section className="py-24 lg:py-32 bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-red-100 to-orange-100 rounded-full blur-3xl opacity-40" />
-      </div>
+    <section className="py-24 lg:py-32 bg-[var(--c-surface-dark)] relative overflow-hidden">
+      {/* Bold shape decoration */}
+      <div className="absolute top-10 right-10 w-24 h-24 bg-[var(--c-yellow)] opacity-20 rotate-12 pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-16 h-16 bg-[var(--c-coral)] opacity-20 rounded-full pointer-events-none" />
 
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <motion.div
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-[#dc2626] to-[#f97316] rounded-3xl mb-8 shadow-2xl"
-          >
-            <Briefcase className="w-12 h-12 text-white" />
-          </motion.div>
-          <h2 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-slate-800 mb-8">
-            Ready to Land Your
-            <span className="gradient-text block mt-2">Dream Job?</span>
+          <div className="w-16 h-16 bg-[var(--c-accent)] border-2 border-white/20 flex items-center justify-center mx-auto mb-8 shadow-[4px_4px_0_rgba(255,255,255,0.2)]">
+            <FileText className="w-8 h-8 text-white" />
+          </div>
+          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6 tracking-tight">
+            Ready to Build Your{" "}
+            <span className="text-[var(--c-yellow)]">Perfect Resume?</span>
           </h2>
-          <p className="text-lg lg:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Join thousands of successful job seekers who have used CAPSLOQUE to create winning resumes. Start building yours today — it&apos;s free!
+          <p className="text-lg text-slate-400 mb-10 max-w-xl mx-auto leading-relaxed font-medium">
+            Join 50,000+ professionals who&apos;ve already created their winning
+            resume with CAPSLOQUE. Free to start, no credit card required.
           </p>
           <Link href="/builder">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-3 px-12 py-5 premium-btn text-white text-lg font-bold rounded-full"
-            >
-              Start Building for Free
-              <ArrowRight className="w-6 h-6" />
-            </motion.button>
+            <button className="btn-primary text-lg px-10 py-5 font-bold">
+              Create Your Resume — It&apos;s Free
+              <ArrowRight className="w-5 h-5" />
+            </button>
           </Link>
+          <p className="text-xs text-slate-500 mt-6 font-bold">
+            No account required to start &bull; Export to PDF &bull;
+            ATS-optimized
+          </p>
         </motion.div>
       </div>
     </section>
   );
 }
 
-// Main Page Component
+/* ============================================================
+   MAIN PAGE
+   ============================================================ */
 export default function HomePage() {
   return (
     <main className="overflow-hidden">
       <LandingNavbar />
       <HeroSection />
+      <LogoCloud />
       <FeaturesSection />
+      <ShowcaseSection />
       <TemplatesSection />
       <HowItWorksSection />
+      <StatsBar />
       <TestimonialsSection />
       <CTASection />
       <Footer />

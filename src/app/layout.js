@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Merriweather } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "./components/AuthProvider";
 
@@ -12,21 +12,38 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const merriweather = Merriweather({
+  variable: "--font-merriweather",
+  subsets: ["latin"],
+  weight: ["300", "400", "700", "900"],
+});
+
 export const metadata = {
-  title: "CAPSLOQUE Resume Builder | Create Professional Resumes",
-  description: "Build stunning, ATS-optimized resumes with CAPSLOQUE's professional resume builder. Choose from multiple templates and export to PDF instantly.",
-  keywords: "resume builder, CV maker, professional resume, ATS resume, CAPSLOQUE",
+  title: "CAPSLOQUE — Professional Resume Builder",
+  description:
+    "Create stunning, ATS-optimized resumes in minutes. Expert-designed templates, real-time preview, and instant PDF export. Trusted by 50,000+ job seekers.",
+  keywords:
+    "resume builder, CV maker, professional resume, ATS resume, ATS-optimized, CAPSLOQUE, free resume builder",
+  openGraph: {
+    title: "CAPSLOQUE — Professional Resume Builder",
+    description:
+      "Create ATS-optimized resumes in minutes with expert-designed templates.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${merriweather.variable} antialiased bg-[var(--c-bg-primary)] text-[var(--c-text-primary)]`}
       >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
